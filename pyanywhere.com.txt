@@ -1,0 +1,5 @@
+(env) 11:41 ~ $ ls
+README.txt  django-apis  env
+(env) 11:41 ~ $ pwd
+/home/saipraveenkondapalli
+(env) 11:41 ~ $
