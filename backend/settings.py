@@ -26,6 +26,10 @@ DEBUG = os.environ.get('DEBUG') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_URLS_REGEX = r"^/api/.*$"  # only allow CORS on URLs starting with /api/
+
 # Application definition
 
 INSTALLED_APPS = [
