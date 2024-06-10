@@ -7,3 +7,8 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = ['name', 'email', 'message', 'site']
+
+
+class ResumeApiParamSerializer(serializers.Serializer):
+    key = serializers.UUIDField(required=True, error_messages={"invalid": 'Not a valid resume key'})
+    site = serializers.UUIDField(required=True, error_messages={"invalid": 'Not a valid site key'})
