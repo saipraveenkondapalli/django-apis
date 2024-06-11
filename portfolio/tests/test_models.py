@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.test import TestCase
 
-from portfolio.models import Site, Contact
+from portfolio.models import Site, Contact, Resume
 
 
 class TestSiteModel(TestCase):
@@ -62,4 +62,43 @@ class TestModelContact(TestCase):
                               message="Test Message 2",
                               site=test_site)
             contact.save()
+        self.assertEqual(raised.exception.__class__, ValueError)
+
+
+class TestResumeModel(TestCase):
+    user = None
+    site = None
+    resume = None
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='testuser', password='12345',
+                                            email="test@example.com")
+        cls.site = Site.objects.create(name='Test Site', user=cls.user, url='http://test.com')
+        cls.resume = Resume.objects.create(name='Test Resume', site=cls.site, url='http://test.com')
+
+    def test_create_resume(self):
+        self.assertEqual(self.resume.name, 'Test Resume')
+        self.assertEqual(self.resume.site, self.site)
+        self.assertEqual(self.resume.url, 'http://test.com')
+
+    def test_resume_str(self):
+        self.assertEqual(str(self.resume), 'Test Resume')
+
+    def test_resume_updated_time(self):
+        self.resume.url = 'http://test2.com'
+        self.resume.save()
+        self.assertIsNotNone(self.resume.last_updated)
+        self.assertIsNotNone(self.resume.created_at)
+        self.assertNotEqual(self.resume.last_updated, self.resume.created_at)
+
+    def test_resume_non_existent_site(self):
+        test_site = Site(name='Test Site', user=self.user, url='http://test2.com')
+        test_site.save()
+        test_site.delete()
+        with self.assertRaises(Exception) as raised:
+            resume = Resume(name='Test Resume 2',
+                            site=test_site,
+                            url='http://test.com')
+            resume.save()
         self.assertEqual(raised.exception.__class__, ValueError)
