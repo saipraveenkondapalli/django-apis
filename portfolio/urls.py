@@ -1,13 +1,10 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
-from .apis import ContactViewSet
+from .apis import ContactCreateAPIView, ResumeApiView
 from .views import dashboard
 
-router = DefaultRouter()
-router.register(r'contact', ContactViewSet)
-
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('api/contact/', ContactCreateAPIView.as_view(), name='contact'),
+    path('api/resume/', ResumeApiView.as_view(), name='resume'),
     path('dashboard/', dashboard, name='dashboard')
 ]
