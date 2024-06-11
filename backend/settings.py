@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'portfolio.middleware.ApiDomainCheckMiddleware'
 ]
 
 ROOT_URLCONF = 'backend.urls'
