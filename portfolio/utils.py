@@ -1,10 +1,9 @@
+import secrets
 import smtplib
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-
-from .models import Contact
 
 
 class Mailer:
@@ -25,7 +24,7 @@ class Mailer:
 
             return False  # mail not sent
 
-    def contact_alert(self, contact: Contact):
+    def contact_alert(self, contact):
         subject = f'New Contact Alert - {contact.site.name}'
         message = f'New Contact from {contact.name}'
         recipient_list = [contact.site.contact_receiver_email] if contact.site.contact_receiver_email else [
@@ -33,3 +32,7 @@ class Mailer:
         template = render_to_string('emails/contact.html', {'contact': contact})
         self.send_email(subject, message, recipient_list, template)
         return True  # mail sent successfully
+
+
+def generate_urlsafe_key() -> str:
+    return secrets.token_urlsafe(50)
