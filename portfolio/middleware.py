@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
@@ -13,7 +14,7 @@ class ApiDomainCheckMiddleware:
         return response
 
     def process_view(self, request, view_func, view_args, view_kwargs):
-        if not request.path.startswith("/api"):
+        if not request.path.startswith("/api") or settings.DEBUG:
             return
 
         request_domain = request.META.get('HTTP_ORIGIN') or request.META.get('HTTP_REFERER') or request.META.get(
