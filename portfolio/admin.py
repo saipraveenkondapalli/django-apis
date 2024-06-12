@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Contact, Site, Resume
+from .models import Contact, Site, Resume, JobApplication
 
 
 @admin.register(Site)
@@ -35,3 +35,19 @@ class ResumeAdmin(admin.ModelAdmin):
         return format_html(f'<a style="color:skyblue" href="{obj.url}" target="_blank">Open Resume</a>')
 
     open_resume.short_description = 'URL'
+
+
+@admin.register(JobApplication)
+class JobApplicationAdmin(admin.ModelAdmin):
+    list_display = ['title', 'company', 'open_resume', 'message_id', 'created_at']
+    search_fields = ['title', 'company', 'resume__name']
+    search_help_text = "Search by title, company, or resume"
+    list_filter = ['resume']
+    list_per_page = 20
+    list_select_related = ['resume']
+    list_display_links = ['title']
+
+    def open_resume(self, obj):
+        return format_html(f'<a style="color:skyblue" href="{obj.resume.url}" target="_blank">Open Resume</a>')
+
+    open_resume.short_description = 'Resume'
