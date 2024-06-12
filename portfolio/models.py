@@ -50,7 +50,7 @@ class JobApplication(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
     message = models.TextField(blank=True, null=True)
     resume = models.ForeignKey('Resume', on_delete=models.CASCADE)
-    message_id = models.TextField(default=generate_urlsafe_key, editable=False, unique=True)
+    message_id = models.CharField(default=generate_urlsafe_key, max_length=255,  editable=False, unique=True)
     last_visit = models.DateTimeField(auto_now=True)
 
     def __str__(self):
