@@ -1,47 +1,58 @@
-from rest_framework import viewsets, permissions
+from django.db.models import F
+from django.shortcuts import get_object_or_404, redirect
+from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .models import Contact, Site
-from .serializers import ContactSerializer
-
-
-# Create your views here.
+from .models import Resume, JobApplication
+from .serializers import ContactSerializer, ResumeApiParamSerializer, JobApplicationMessageSerializer
 
 
-class ContactViewSet(viewsets.ModelViewSet):
-    queryset = Contact.objects.all()
-    serializer_class = ContactSerializer
+class ContactCreateAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = ContactSerializer(data=request.data)
 
-    def get_permissions(self):
-        if self.action == 'create':
-            permissions_classes = [permissions.AllowAny]
-        else:
-            permissions_classes = [permissions.IsAuthenticated]
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        return [permission() for permission in permissions_classes]
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def create(self, request, *args, **kwargs):
-        request_domain = request.META.get('HTTP_ORIGIN') or request.META.get('HTTP_REFERER')
 
-        if not request_domain:
-            return Response({'message': 'Domain not allowed'}, status=400)
+class ResumeApiView(APIView):
+    def get(self, request, *args, **kwargs):
+        serializer = ResumeApiParamSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        site = serializer.validated_data.get('site')
+        key = serializer.validated_data.get('key')
 
-        site = Site.objects.get(client_id=request.data['site'])
+        resume = get_object_or_404(Resume, site=site, key=key)
 
-        if site.url != request_domain:
-            return Response({'message': 'Domain not allowed', "domain": request_domain}, status=400)
+        return redirect(resume.url)
 
-        return super().create(request, *args, **kwargs)
+    def get_view_name(self):
+        return 'Resume API View'
 
-        # try:
-        #     send_mail(
-        #         'New Contact Form Submission',
-        #         f'Name: {request.data["name"]}\nEmail: {request.data["email"]}\nMessage: {request.data["message"]}',
-        #         settings.EMAIL_HOST_USER,
-        #         [settings.EMAIL_HOST_USER],
-        #     )
-        #     print(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-        #     return Response({'message': 'We have received your message. We will get back to you soon.'})
-        #
-        # except Exception as e:
-        #     return response
+    def get_view_description(self, html=False):
+        return 'This view is used to fetch resume url.'
+
+
+class JobApplicationMessageAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        serializer = JobApplicationMessageSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+
+        message_id = serializer.validated_data.get('message_id')
+
+        job_application = JobApplication.objects.filter(message_id=message_id).values(
+            'title',
+            'company',
+            'url',
+            'message',
+            'notes'
+        ).annotate(resume=F('resume__url'))
+
+        if not job_application:
+            return Response({'message': 'Job Application not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'data': job_application}, status=status.HTTP_200_OK)
