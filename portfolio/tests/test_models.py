@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.test import TestCase
 
-from portfolio.models import Site, Contact, Resume
+from portfolio.models import Site, Contact, Resume, JobApplication
 
 
 class TestSiteModel(TestCase):
@@ -101,4 +101,50 @@ class TestResumeModel(TestCase):
                             site=test_site,
                             url='http://test.com')
             resume.save()
+        self.assertEqual(raised.exception.__class__, ValueError)
+
+
+class TestJobApplicationModel(TestCase):
+    user = None
+    site = None
+    resume = None
+    job_application = None
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='testuser', password='12345',
+                                            email="test@example.com")
+        cls.site = Site.objects.create(name='Test Site', user=cls.user, url='http://test.com')
+        cls.resume = Resume.objects.create(name='Test Resume', site=cls.site, url='http://test.com')
+        cls.job_application = JobApplication.objects.create(title='Test Job Application',
+                                                            company='Test Company',
+                                                            url='http://test.com',
+                                                            resume=cls.resume)
+
+    def test_create_job_application(self):
+        self.assertEqual(self.job_application.title, 'Test Job Application')
+        self.assertEqual(self.job_application.company, 'Test Company')
+        self.assertEqual(self.job_application.url, 'http://test.com')
+        self.assertEqual(self.job_application.resume, self.resume)
+
+    def test_job_application_str(self):
+        self.assertEqual(str(self.job_application), 'Test Job Application')
+
+    def test_job_application_updated_time(self):
+        self.job_application.url = 'http://test2.com'
+        self.job_application.save()
+        self.assertIsNotNone(self.job_application.last_updated)
+        self.assertIsNotNone(self.job_application.created_at)
+        self.assertNotEqual(self.job_application.last_updated, self.job_application.created_at)
+
+    def test_job_application_non_existent_resume(self):
+        test_resume = Resume(name='Test Resume', site=self.site, url='http://test2.com')
+        test_resume.save()
+        test_resume.delete()
+        with self.assertRaises(Exception) as raised:
+            job_application = JobApplication(title='Test Job Application 2',
+                                             company='Test Company 2',
+                                             url='http://test.com',
+                                             resume=test_resume)
+            job_application.save()
         self.assertEqual(raised.exception.__class__, ValueError)
