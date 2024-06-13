@@ -133,7 +133,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # default Login redirect
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = 'portfolio:dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
 # Email Settings
