@@ -1,10 +1,10 @@
 from django.urls import path
 
-from .views import dashboard
+from .views import SiteView, SiteDeleteView
 
 app_name = 'portfolio'
 
 urlpatterns = [
-    path('dashboard/', dashboard, name='dashboard'),
-
+    path('dashboard/', SiteView.as_view(), name='dashboard'),
+    path('portfolio/site/<uuid:pk>', SiteDeleteView.as_view(), name='delete_site'),
 ]
