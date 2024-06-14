@@ -1,0 +1,62 @@
+{% extends './base.html' %}
+
+{% block content %}
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="py-8">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <h1 class="text-2xl font-semibold text-gray-900">New Site</h1>
+                <form method="POST" class="mt-5">
+                    {% csrf_token %}
+                    <div class="space-y-1">
+
+
+                        <div class="rounded-md space-y-1">
+                            <label for="name">Site Name</label>
+                            <input type="text" id="name" name="name"
+                                   class=" px-2 w-full border py-2 bg-white border-indigo-300 rounded-lg
+                               focus:ring-indigo-500 focus:border-indigo-500 text-sm" required>
+                        </div>
+
+                        {% if form.name.errors %}
+                            <div class="text-red-500 text-xs">
+                                {{ form.name.errors.as_text }}
+                            </div>
+                        {% endif %}
+
+
+                        <div class="rounded-md space-y-1">
+                            <label for="siteURL">Site URL</label>
+                            <input type="url" autocomplete id="siteURL" name="url"
+                                   value="{{ form.url.value|default_if_none:'' }}"
+                                   class=" px-2 w-full border py-2 bg-white border-indigo-300 rounded-lg
+                               focus:ring-indigo-500 focus:border-indigo-500 text-sm" required>
+                        </div>
+
+                        {% if form.url.errors %}
+                            <div class="text-red-500 text-xs">
+                                {{ form.url.errors.as_text }}
+                            </div>
+                        {% endif %}
+
+                        <div class="rounded-md space-y-1">
+                            <label for="siteContact">Contact Email</label>
+                            <input type="text" id="siteContact" name="contact_receiver_email"
+                                   value="{{ request.user.email }}"
+                                   class=" px-2 py-2 w-full border bg-white border-indigo-300 rounded-lg
+                               focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                        </div>
+
+                        <button type="submit"
+                                class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+                            Save
+                        </button>
+
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

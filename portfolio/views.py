@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import DeleteView
 
+from .forms import SiteForm
 from .models import Site
 
 
@@ -30,3 +31,22 @@ class SiteDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('portfolio:dashboard')
+
+
+class SiteCreateView(LoginRequiredMixin, View):
+    def get(self, request):
+        forms = SiteForm()
+        return render(request, "portfolio/new_site.html", {"form": forms})
+
+    def post(self, request):
+        form = SiteForm(request.POST)
+        # add user to the form
+        form.instance.user = request.user
+
+        if not form.is_valid():
+            return render(request, "portfolio/new_site.html", {"form": form})
+
+        form.save()
+
+        messages.success(request, "Site created successfully")
+        return redirect('portfolio:dashboard')
