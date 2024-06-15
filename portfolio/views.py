@@ -3,10 +3,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
-from django.views.generic import DeleteView
+from django.views.generic import DeleteView, ListView
 
 from .forms import SiteForm
-from .models import Site
+from .models import Site, Contact
 
 
 class SiteView(LoginRequiredMixin, View):
@@ -50,3 +50,13 @@ class SiteCreateView(LoginRequiredMixin, View):
 
         messages.success(request, "Site created successfully")
         return redirect('portfolio:dashboard')
+
+
+class ContactView(LoginRequiredMixin, ListView):
+    template_name = 'portfolio/contacts.html'
+    model = Contact
+    paginate_by = 10
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        return Contact.objects.filter(site__user=self.request.user).order_by('-created_at')
