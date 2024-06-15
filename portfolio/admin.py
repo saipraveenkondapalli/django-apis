@@ -13,7 +13,7 @@ class Admin(admin.ModelAdmin):
 
 @admin.register(Contact)
 class Admin(admin.ModelAdmin):
-    list_display = ['name', 'email', 'site', 'created_at']
+    list_display = ['name', 'email', 'owner', 'created_at']
     search_fields = ['name', 'email', 'site']
     search_help_text = "Search by name, email, or site"
     list_filter = ['site']
@@ -21,6 +21,9 @@ class Admin(admin.ModelAdmin):
     list_select_related = ['site']
     list_display_links = ['name']
     list_editable = ['email']
+
+    def owner(self, obj):
+        return obj.site.user.username
 
 
 @admin.register(Resume)
