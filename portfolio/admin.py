@@ -6,14 +6,14 @@ from .models import Contact, Site, Resume, JobApplication
 
 @admin.register(Site)
 class Admin(admin.ModelAdmin):
-    list_display = ['name', 'url', 'client_id']
-    search_fields = ['name', 'url', 'client_id']
-    search_help_text = "Search by name, url, or client_id"
+    list_display = ['name', 'url', 'client_id', 'user']
+    search_fields = ['name', 'url', 'client_id', 'user__username', 'user__email']
+    search_help_text = "Search by name, url, username, user email or client_id"
 
 
 @admin.register(Contact)
 class Admin(admin.ModelAdmin):
-    list_display = ['name', 'email', 'site', 'created_at']
+    list_display = ['name', 'email', 'owner', 'created_at']
     search_fields = ['name', 'email', 'site']
     search_help_text = "Search by name, email, or site"
     list_filter = ['site']
@@ -22,12 +22,15 @@ class Admin(admin.ModelAdmin):
     list_display_links = ['name']
     list_editable = ['email']
 
+    def owner(self, obj):
+        return obj.site.user.username
+
 
 @admin.register(Resume)
 class ResumeAdmin(admin.ModelAdmin):
     list_display = ['name', 'site', 'key', 'open_resume']
     search_fields = ['name', 'site__user__email', 'key']
-    search_help_text = "Search by name, site, email, or key"
+    search_help_text = "Search by name,  site, email, or key"
     list_filter = ['site']
     list_per_page = 20
 

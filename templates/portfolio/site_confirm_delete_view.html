@@ -1,0 +1,28 @@
+{% extends "./base.html" %}
+{% block content %}
+    <div class="min-h-screen bg-gray-50 p-10">
+        <div class="flex justify-center items-center">
+            <div class="container bg-white rounded-lg border border-gray-100 w-3/4 mt-12 p-5">
+                <h3 class="text-3xl font-semibold text-gray-900">Confirm Delete</h3>
+                <p class="text-gray-500 mt-2">Are you sure you want to delete the site <span
+                        class="text-black font-medium">{{ object }} ?</span></p>
+                <p class="text-gray-500 mt-2">This action cannot be undone</p>
+                <p class="text-gray-500 mt-2">All the associated data with your "{{ object }}" will also be deleted </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <a class="bg-gray-500 mt-3 text-white rounded-lg px-2 py-1 hover:bg-gray-700"
+                       href="{% url 'portfolio:dashboard' %}">Cancel</a>
+
+                    <button class="bg-red-500 mt-3 text-white rounded-lg px-2 py-1 hover:bg-red-700" type="submit">
+                        Delete
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}
+

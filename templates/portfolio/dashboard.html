@@ -1,5 +1,61 @@
 {% extends "./base.html" %}
 
+{% block content %}
+    <div class="min-h-screen bg-white p-10">
 
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{% if message.level == 40 %}bg-red-100 border-0 border-red-400 text-red-700{% else %}bg-green-100 border-0 border-green-400 text-green-700{% endif %} px-4 py-3 rounded relative"
+                     role="alert">
+                    <span class="block sm:inline">{{ message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
 
+        <div class="flex justify-center items-center ">
+            <div class="container rounded-lg border border-gray-100 mt-12 p-5 overflow-x-auto ">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-4xl font-semibold text-gray-900"> Sites </h2>
+
+                    <a class="group relative flex justify-center p-1.5 border border-transparent
+                         text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700
+                          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                       href="{% url 'portfolio:create_site' %}"
+                    >
+                        Add Site
+                    </a>
+                </div>
+                <div>
+                    <form method="get" class="flex justify-center items-center space-x-5">
+                        <input
+                                type="text"
+                                class="py-1 px-2 rounded-lg border
+                           border-gray-300
+                            placeholder-gray-500
+                            w-[300px]
+                             focus:ring-2 focus:ring-indigo-200 focus:border-indigo-700"
+                                placeholder="Search Site"
+                                name="search"
+                        >
+                        <button type="submit"
+                                class="group relative flex justify-center p-1.5 border border-transparent
+                         text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700
+                          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            Search
+                        </button>
+                    </form>
+                </div>
+                {% if sites %}
+                    
+                   <div class="w-full"> {% include './site_table.html' with sites=sites page_obj=page_obj  %}</div>
+                {% else %}
+                    <div class="flex justify-center items-center mt-10">
+                        <p class="text-black text-2xl">No sites</p>
+                    </div>
+                {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
 
