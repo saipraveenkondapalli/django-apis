@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link href="{% static 'src/styles.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'src/styles.css' %}?{% now "U" %}">
 </head>
 <body>
 <nav class="bg-gray-800">
@@ -44,12 +44,14 @@
                         <a href="{% url 'portfolio:contacts' %}"
                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700
                            hover:text-white">Contacts</a>
-                        <a href="#"
-                           class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700
-                           hover:text-white">Projects</a>
-                        <a href="#"
-                           class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700
-                           hover:text-white">Calendar</a>
+                        {% if request.user.is_superuser %}
+                            <a href="{% url 'admin:index' %}"
+                               class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700
+                                      hover:text-white">Admin</a>
+                        {% endif %}
+{#                        <a href="#"#}
+{#                           class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700#}
+{#                           hover:text-white">Calendar</a>#}
                     </div>
                 </div>
             </div>
@@ -93,7 +95,7 @@ shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-400 hover:text-white"
                            role="menuitem" tabindex="-1"
                            id="user-menu-item-1">Settings</a>
-                
+
 
                         {% if request.user.is_authenticated %}
                             <form method="post" action="{% url 'logout' %}">
@@ -123,14 +125,14 @@ shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
                 Team
             </a>
-            <a href="#"
+            <a href="{% url 'admin:index' %}"
                class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-                Projects
+                Admin
             </a>
-            <a href="#"
-               class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-                Calendar
-            </a>
+{#            <a href="#"#}
+{#               class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">#}
+{#                Calendar#}
+{#            </a>#}
         </div>
     </div>
 </nav>

@@ -1,73 +1,91 @@
 {% extends './base.html' %}
 {% block content %}
     <div class="flex justify-center items-center">
-        <div class="container rounded-lg border border-gray-100 mt-12 p-5 ">
-            <h2 class="text-4xl font-semibold text-gray-900">Contacts</h2>
-            {% if object_list %}
-                <div class="flex overflow-x-auto">
-                    <table class="divide-y divide-gray-200 w-full">
-                        <thead>
+    <div class="container rounded-lg border border-gray-100 mt-12 p-5 ">
+        <h2 class="text-4xl font-semibold text-gray-900">Contacts</h2>
+
+        <form class="mt-5 flex justify-center space-x-6" action="" method="get">
+
+
+            <input type="text" name="search" placeholder="Search" class="border w-50 border-gray-200 p-2 rounded-lg">
+
+            <button type="submit" class="bg-indigo-500 text-white py-2 px-2 rounded-lg hover:bg-indigo-700">
+                Search
+            </button>
+        </form>
+
+        <p class="text-sm text-center text-gray-500 mt-2">
+            search by name, email, site
+        </p>
+
+
+        {% if object_list %}
+            <div class="flex justify-end">
+
+            <div class="flex overflow-x-auto">
+                <table class="divide-y divide-gray-200 w-full">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left tracking-wider w-12 whitespace-normal">S.No</th>
+                        <th scope="col" class="px-6 py-3 text-left tracking-wider w-48 whitespace-normal">Name</th>
+                        <th scope="col" class="px-6 py-3 text-left tracking-wider w-48 whitespace-normal">Email</th>
+                        <th scope="col" class="px-6 py-3 text-left tracking-wider w-72 whitespace-normal">Message
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left tracking-wider w-50 whitespace-normal">Time</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                    {% for contact in object_list %}
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left tracking-wider w-12 whitespace-normal">S.No</th>
-                            <th scope="col" class="px-6 py-3 text-left tracking-wider w-48 whitespace-normal">Name</th>
-                            <th scope="col" class="px-6 py-3 text-left tracking-wider w-48 whitespace-normal">Email</th>
-                            <th scope="col" class="px-6 py-3 text-left tracking-wider w-72 whitespace-normal">Message
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left tracking-wider w-50 whitespace-normal">Time</th>
+                            <td class="px-6 py-4 ">{{ forloop.counter }}</td>
+                            <td class="px-6 py-4 ">{{ contact.name }}</td>
+                            <td class="px-6 py-4 ">{{ contact.email }}</td>
+                            <td class="px-6 py-4 ">{{ contact.message }}</td>
+                            <td class="px-6 py-4">{{ contact.created_at }}</td>
                         </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                        {% for contact in object_list %}
-                            <tr>
-                                <td class="px-6 py-4 ">{{ forloop.counter }}</td>
-                                <td class="px-6 py-4 ">{{ contact.name }}</td>
-                                <td class="px-6 py-4 ">{{ contact.email }}</td>
-                                <td class="px-6 py-4 ">{{ contact.message }}</td>
-                                <td class="px-6 py-4">{{ contact.created_at }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td class="p-2" colspan="5">
-                                <div class="flex justify-center">
-                                    {% if page_obj.has_previous %}
-                                        <button class="bg-indigo-500 text-white py-2 px-2
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td class="p-2" colspan="5">
+                            <div class="flex justify-center">
+                                {% if page_obj.has_previous %}
+                                    <button class="bg-indigo-500 text-white py-2 px-2
                            rounded-lg hover:bg-indigo-700 disabled:cursor-no-drop disabled:opacity-70 mr-5">
-                                            <a href="?page=1"> Previous </a>
-                                        </button>
-                                    {% else %}
-                                        <button disabled class="bg-indigo-500 text-white py-2 px-2
+                                        <a href="?page=1"> Previous </a>
+                                    </button>
+                                {% else %}
+                                    <button disabled class="bg-indigo-500 text-white py-2 px-2
                            rounded-lg  disabled:cursor-no-drop disabled:opacity-70 mr-5">
-                                            <span> Previous </span>
-                                        </button>
-                                    {% endif %}
-                                    <span class="current-page font-medium  text-3xl ">
+                                        <span> Previous </span>
+                                    </button>
+                                {% endif %}
+                                <span class="current-page font-medium  text-3xl ">
                             {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
                         </span>
-                                    {% if page_obj.has_next %}
-                                        <button class="bg-indigo-500 text-white py-2 px-2
+                                {% if page_obj.has_next %}
+                                    <button class="bg-indigo-500 text-white py-2 px-2
                            rounded-lg hover:bg-indigo-700 disabled:cursor-no-drop disabled:opacity-70 ml-5">
-                                            <a href="?page={{ page_obj.next_page_number }}"> Next </a>
-                                        </button>
-                                    {% else %}
-                                        <button disabled class="bg-indigo-500 text-white py-2 px-2
+                                        <a href="?page={{ page_obj.next_page_number }}"> Next </a>
+                                    </button>
+                                {% else %}
+                                    <button disabled class="bg-indigo-500 text-white py-2 px-2
                            rounded-lg disabled:cursor-no-drop disabled:opacity-70 ml-5">
-                                            <span> Next </span>
-                                        </button>
-                                    {% endif %}
-                                </div>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            {% else %}
-                <div class="flex justify-center items-center">
-                    <h2 class="text-2xl font-semibold text-gray-900">No Contacts</h2>
-                </div>
-            {% endif %}
-   
+                                        <span> Next </span>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        {% else %}
+            <div class="flex justify-center items-center">
+                <h2 class="text-2xl font-semibold text-gray-900">No Contacts</h2>
+            </div>
+        {% endif %}
+
         </div>
     </div>
     <script>
